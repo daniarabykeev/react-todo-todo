@@ -1,70 +1,74 @@
-import React,{ useState } from "react";
-import ToDo from "./components/Todo/ToDo";
-import ToDoList from "./components/ToDoList/ToDoList";
-import EditModal from "./components/EditModal/EditModal";
+import React, { useState } from 'react';
+import { Button } from 'react-bootstrap';
+import "./App.css";
+import ButtonAC from './components/ButtonAC';
+import ButtobDivide from './components/ButtonDivide';
+import ButtonDot from './components/ButtonDot';
+import ButtonEqual from './components/ButtonEqual';
+import ButtonLeftBracket from './components/ButtonLeftBracket';
+import ButtonNumbers from './components/ButtonNumbers';
+import ButtonRightBracker from './components/ButtonRightBracker';
+import ButtonZero from './components/ButtonZero';
+import Result from './components/Result';
 
 
-import 'bootstrap/dist/css/bootstrap.min.css';
 
+const App = () => {
+  let elems = [7,8,9, "*", 4,5,6, "-", 1,2,3, "+"]
+  const[result, setResult] = useState("0")
 
-
-
-function App() {
-  const [tasks, setTasks] = useState([])
-  const [show, setShow] = useState(false)
-  const [taskToEdit, setTaskToEdit] = useState(null)
-  function handlerTask(newObj){
-
-    let newTodos = [...tasks]
-    newTodos.push(newObj)
-    setTasks(newTodos)
-  }
-console.log(tasks);
-
-function handleDeleteTask(id){
-  let newTaskArray =tasks.filter((item)=>{
-    return item.id !== id
-  })
-  setTasks(newTaskArray)
-}
-
-function handleEditTask(editedTask){
-  let newTaskArray=tasks.map((item)=>{
-    if (editedTask.id !== item.id){
-      return item
-    }else{
-      return editedTask
+  function handleValues(value){
+    if(result === "0" && value != "."){
+      setResult(String(value))
+      return
     }
-  })
-  setTasks(newTaskArray)
-  setShow(false)
-}
+    setResult(String(result) + String(value))
+  }
 
-function getTaskToEdit (task){
-  setTaskToEdit(task)
-  setShow(true)
-}
+  function equal (){
+    try{
+      let res = eval(result)
+    setResult(res)
+    }catch(error){
+      setResult("Error!")
+    }
+    setTimeout(()=>{
+      setResult("0")
+    }, 5000)
+  }
 
-  return (
-    <div className="App">
-      <ToDo 
-        handlerTask={handlerTask}
+    return (
+    <div className='wrapper'>
+      <Result 
+        result={result}
       />
-      <ToDoList 
-        tasks={tasks}
-        handleDeleteTask={handleDeleteTask}
-        getTaskToEdit={getTaskToEdit}
-      />
-     { taskToEdit ?
-      <EditModal 
-        show={show}
-        setShow={setShow}
-        handleEditTask={handleEditTask}
-        taskToEdit={taskToEdit}
-      />: null}
+      <div className='buttons'>
+        <ButtonAC setResult={setResult}/>
 
+        <ButtonLeftBracket 
+        handleValues={handleValues}/>
+
+        <ButtonRightBracker 
+        handleValues={handleValues}/>
+
+        <ButtobDivide
+         handleValues={handleValues}/>
+
+        {elems.map((item, index)=> <ButtonNumbers key={index} elem={item} handleValues={handleValues}/>)}
+
+        <ButtonZero 
+        handleValues={handleValues}/>
+
+        <ButtonDot 
+        handleValues={handleValues}/>
+
+        <ButtonEqual equal={equal}/>
+
+
+        
+      </div>
     </div>
   );
-}
+};
 
 export default App;
